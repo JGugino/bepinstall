@@ -7,11 +7,11 @@ import (
 )
 
 type ConfigHandler struct {
-	InstallerVersion string              `json:"installer-version"`
-	GameDirectories  []map[string]string `json:"game-directories"`
+	InstallerVersion string            `json:"installer-version"`
+	GameDirectories  map[string]string `json:"game-directories"`
 }
 
-func InitConfigHandler() ConfigHandler {
+func MustInitConfigHandler() ConfigHandler {
 	config, err := os.Open("config.json")
 	if err != nil {
 		panic(err)

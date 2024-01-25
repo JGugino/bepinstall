@@ -1,8 +1,7 @@
 {
     "installer-version": "0.0.1",
-    "game-directories": [
-        {
-            "lethal-company": "D:\\SteamLibrary\\steamapps\\common\\Lethal Company"
-        }
-    ]
+    "game-directories": {
+        "lethal-company": "D:\\SteamLibrary\\steamapps\\common\\Lethal Company",
+        "testing": "./test_dir"
+    }
 }
