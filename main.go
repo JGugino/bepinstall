@@ -5,65 +5,41 @@ import (
 	"os"
 
 	"github.com/JGugino/bepinstall/handlers"
-	"github.com/charmbracelet/bubbles/progress"
+	"github.com/JGugino/bepinstall/model"
+	"github.com/JGugino/bepinstall/views"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/muesli/termenv"
 )
-
-type InstallerModel struct {
-	id               string
-	progressBar      progress.Model
-	currentPercent   float64
-	progressBarShown bool
-}
 
 var bepinVersionHandler handlers.BepinVersionHandler
 
 func main() {
 	configHandler := handlers.MustInitConfigHandler()
 
-	progressBar := progress.New(progress.WithColorProfile(termenv.Ascii))
+	viewHandler := handlers.InitViewHandler()
 
-	program := tea.NewProgram(InstallerModel{
-		id:               "installer-model-0.0.1",
-		progressBar:      progressBar,
-		currentPercent:   0.2,
-		progressBarShown: false,
+	var homeView = handlers.View{
+		Id:          "home",
+		ViewDisplay: views.ShowHome(),
+	}
+
+	viewHandler.AddView(homeView)
+
+	viewHandler.SetView("home")
+
+	program := tea.NewProgram(model.InstallerModel{
+		Id:            "installer-model-0.0.1",
+		ConfigHandler: &configHandler,
+		ViewHandler:   &viewHandler,
 	})
+
+	program.SetWindowTitle(fmt.Sprintf("BepInstaller v%s", configHandler.InstallerVersion))
 
 	bepinVersionHandler = handlers.InitBepinHandler()
 
-	bepinVersionHandler.InstallBepinEx("5.4.22-win", configHandler, "testing")
+	//bepinVersionHandler.InstallBepinEx("5.4.22-win", configHandler, "testing")
 
 	if _, err := program.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
 	}
-}
-
-func (im InstallerModel) Init() tea.Cmd {
-	return nil
-}
-
-func (im InstallerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c":
-			return im, tea.Quit
-		}
-		return im, nil
-	}
-
-	return im, nil
-}
-
-func (im InstallerModel) View() string {
-
-	displayString := "BepInstall - v0.0.1\npress ctrl+c to quit.\n\n"
-
-	if im.progressBarShown {
-		displayString += im.progressBar.ViewAs(im.currentPercent) + "\n\n"
-	}
-	return displayString
 }
