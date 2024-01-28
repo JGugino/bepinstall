@@ -9,32 +9,36 @@ import (
 )
 
 type BepinVersionHandler struct {
-	ltsBepinVersion    string
-	bepinDownloadLinks map[string]BepinVersionInfo
+	LtsBepinVersion    string
+	BepinDownloadLinks map[string]BepinVersionInfo
 }
 
 type BepinVersionInfo struct {
-	version         string
-	link            string
-	operatingSystem string
-	fileName        string
+	Id              string
+	Name            string
+	Version         string
+	Link            string
+	OperatingSystem string
+	FileName        string
 }
 
 func InitBepinHandler() BepinVersionHandler {
 	return BepinVersionHandler{
-		ltsBepinVersion: "5.4.22",
-		bepinDownloadLinks: map[string]BepinVersionInfo{
+		LtsBepinVersion: "5.4.22",
+		BepinDownloadLinks: map[string]BepinVersionInfo{
 			"5.4.22-win": {
-				version:         "5.4.22",
-				link:            "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip",
-				operatingSystem: "win",
-				fileName:        "BepInEx_x64_5.4.22.0.zip",
+				Id:       "5.4.22-win",
+				Name:     "BepInEx x64 - 5.4.22",
+				Version:  "5.4.22",
+				Link:     "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_x64_5.4.22.0.zip",
+				FileName: "BepInEx_x64_5.4.22.0.zip",
 			},
 			"5.4.22-unix": {
-				version:         "5.4.22",
-				link:            "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_unix_5.4.22.0.zip",
-				operatingSystem: "unix",
-				fileName:        "BepInEx_unix_5.4.22.0.zip",
+				Id:       "5.4.22-unix",
+				Name:     "BepInEx Unix - 5.4.22",
+				Version:  "5.4.22",
+				Link:     "https://github.com/BepInEx/BepInEx/releases/download/v5.4.22/BepInEx_unix_5.4.22.0.zip",
+				FileName: "BepInEx_unix_5.4.22.0.zip",
 			},
 		},
 	}
@@ -42,13 +46,13 @@ func InitBepinHandler() BepinVersionHandler {
 
 func (vh BepinVersionHandler) InstallBepinEx(version string, config ConfigHandler, gameDir string) error {
 
-	err := MustDownloadFile(vh.bepinDownloadLinks[version].fileName, "./tmp", vh.bepinDownloadLinks[version].link)
+	err := MustDownloadFile(vh.BepinDownloadLinks[version].FileName, "./tmp", vh.BepinDownloadLinks[version].Link)
 
 	if err != nil {
 		return err
 	}
 
-	bepinZipFile, err := os.Open(path.Join("./tmp", vh.bepinDownloadLinks[version].fileName))
+	bepinZipFile, err := os.Open(path.Join("./tmp", vh.BepinDownloadLinks[version].FileName))
 
 	if err != nil {
 		return err

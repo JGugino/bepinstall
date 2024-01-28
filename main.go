@@ -6,7 +6,6 @@ import (
 
 	"github.com/JGugino/bepinstall/handlers"
 	"github.com/JGugino/bepinstall/model"
-	"github.com/JGugino/bepinstall/views"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -15,44 +14,29 @@ var bepinVersionHandler handlers.BepinVersionHandler
 func main() {
 	configHandler := handlers.MustInitConfigHandler()
 
-	viewHandler := handlers.InitViewHandler()
-
 	bepinVersionHandler = handlers.InitBepinHandler()
 
-	homeRenderer := views.HomeView{
-		ViewHandler: &viewHandler,
-		OptionsList: &views.List{ListItems: []*views.ListItem{
-			{Name: "Install BepInEx & Mods", Action: "install-both", Selected: true},
-			{Name: "Only Install BepInEx", Action: "install-bepin", Selected: false},
-			{Name: "Update Mods", Action: "install-updates", Selected: false},
-		},
-			Index: 0,
-		},
-	}
-
-	homeView := handlers.View{
-		Id:           "home",
-		ViewRenderer: homeRenderer,
-	}
-
-	installRenderer := views.InstallView{}
-
-	installView := handlers.View{
-		Id:           "install",
-		ViewRenderer: installRenderer,
-	}
-
-	viewHandler.AddView(homeView)
-	viewHandler.AddView(installView)
-
-	viewHandler.SetView("home")
-
-	program := tea.NewProgram(model.InstallerModel{
+	installerModel := &model.InstallerModel{
 		Id:            "installer-model-0.0.1",
 		ConfigHandler: &configHandler,
 		BepinHandler:  &bepinVersionHandler,
-		ViewHandler:   &viewHandler,
-	})
+		CurrentView:   "home",
+		PossibleViews: []string{
+			"home",
+			"select",
+			"install",
+		},
+		HomeList: handlers.CreateNewList(0, []*handlers.ListItem{
+			{Name: "Install BepInEx", Action: "install-bepin", Selected: true},
+			{Name: "Install Mods", Action: "install-mods", Selected: false},
+		}),
+		BepinVersions: handlers.CreateNewList(0, []*handlers.ListItem{
+			{Name: bepinVersionHandler.BepinDownloadLinks["5.4.22-win"].Name, Action: bepinVersionHandler.BepinDownloadLinks["5.4.22-win"].Id, Selected: true},
+			{Name: bepinVersionHandler.BepinDownloadLinks["5.4.22-unix"].Name, Action: bepinVersionHandler.BepinDownloadLinks["5.4.22-unix"].Id, Selected: false},
+		}),
+	}
+
+	program := tea.NewProgram(installerModel)
 
 	program.SetWindowTitle(fmt.Sprintf("BepInstaller v%s", configHandler.InstallerVersion))
 
