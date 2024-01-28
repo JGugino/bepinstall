@@ -10,6 +10,7 @@ import (
 type InstallerModel struct {
 	Id            string
 	ConfigHandler *handlers.ConfigHandler
+	BepinHandler  *handlers.BepinVersionHandler
 	ViewHandler   *handlers.ViewHandler
 }
 
@@ -18,25 +19,26 @@ func (im InstallerModel) Init() tea.Cmd {
 }
 
 func (im InstallerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c":
-			return im, tea.Quit
-		}
-		return im, nil
-	}
+	return im, im.ViewHandler.CurrentView.ViewRenderer.Update(msg)
+	// switch msg := msg.(type) {
+	// case tea.KeyMsg:
+	// 	switch msg.String() {
+	// 	case "ctrl+c":
+	// 		return im, tea.Quit
+	// 	}
+	// 	return im, nil
+	// }
 
-	return im, nil
+	// return im, nil
 }
 
 func (im InstallerModel) View() string {
 
 	displayString := fmt.Sprintf("BepInstall - v%s\n", im.ConfigHandler.InstallerVersion)
 
-	displayString += im.ViewHandler.ShowView()
+	displayString += im.ViewHandler.CurrentView.ViewRenderer.Show()
 
-	displayString += "press ctrl+c to quit.\n"
+	displayString += "\npress ctrl+c to quit.\n"
 
 	return displayString
 }

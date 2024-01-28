@@ -17,9 +17,22 @@ func main() {
 
 	viewHandler := handlers.InitViewHandler()
 
-	var homeView = handlers.View{
-		Id:          "home",
-		ViewDisplay: views.ShowHome(),
+	bepinVersionHandler = handlers.InitBepinHandler()
+
+	homeRenderer := views.HomeView{
+		OptionsList: &views.List{ListItems: []*views.ListItem{
+			{Name: "Install BepInEx & Mods", Selected: true},
+			{Name: "Only Install BepInEx", Selected: false},
+			{Name: "Update Mods", Selected: false},
+		},
+			Index: 0,
+		},
+	}
+
+	homeView := handlers.View{
+		Id:           "home",
+		ViewRenderer: homeRenderer,
+		ViewDisplay:  homeRenderer.Show(),
 	}
 
 	viewHandler.AddView(homeView)
@@ -29,14 +42,17 @@ func main() {
 	program := tea.NewProgram(model.InstallerModel{
 		Id:            "installer-model-0.0.1",
 		ConfigHandler: &configHandler,
+		BepinHandler:  &bepinVersionHandler,
 		ViewHandler:   &viewHandler,
 	})
 
 	program.SetWindowTitle(fmt.Sprintf("BepInstaller v%s", configHandler.InstallerVersion))
 
-	bepinVersionHandler = handlers.InitBepinHandler()
+	// err := bepinVersionHandler.InstallBepinEx("5.4.22-win", configHandler, "testing")
 
-	//bepinVersionHandler.InstallBepinEx("5.4.22-win", configHandler, "testing")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	if _, err := program.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)

@@ -2,38 +2,36 @@ package handlers
 
 import (
 	"errors"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type ViewHandler struct {
-	CurrentView   View
-	possibleViews map[string]View
+	CurrentView   *View
+	possibleViews map[string]*View
 }
 
 type View struct {
-	Id          string
-	ViewDisplay string
+	Id           string
+	ViewRenderer ViewRenderer
+	ViewDisplay  string
+}
+
+type ViewRenderer interface {
+	Show() string
+	Update(msg tea.Msg) tea.Cmd
 }
 
 func InitViewHandler() ViewHandler {
 	return ViewHandler{
-		CurrentView:   View{},
-		possibleViews: make(map[string]View, 4),
+		CurrentView:   &View{},
+		possibleViews: make(map[string]*View, 4),
 	}
-}
-
-func (h *ViewHandler) ShowView() string {
-	returnString := ""
-
-	returnString += h.CurrentView.ViewDisplay
-
-	returnString += "\n"
-
-	return returnString
 }
 
 func (h *ViewHandler) AddView(view View) error {
 	if _, ok := h.possibleViews[view.Id]; !ok {
-		h.possibleViews[view.Id] = view
+		h.possibleViews[view.Id] = &view
 		return nil
 	}
 
@@ -54,6 +52,6 @@ func (h *ViewHandler) SetView(viewId string) error {
 	return nil
 }
 
-func (h ViewHandler) GetPossibleViews() map[string]View {
+func (h ViewHandler) GetPossibleViews() map[string]*View {
 	return h.possibleViews
 }

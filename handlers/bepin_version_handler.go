@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"archive/zip"
+	"errors"
 	"os"
 	"path"
 	"strings"
@@ -67,7 +68,11 @@ func (vh BepinVersionHandler) InstallBepinEx(version string, config ConfigHandle
 		return err
 	}
 
-	installDir := config.GameDirectories[gameDir]
+	installDir, ok := config.GameDirectories[gameDir]
+
+	if !ok {
+		return errors.New("invalid-install-dir")
+	}
 
 	for _, f := range zipReader.File {
 		splitName := strings.Split(f.Name, "/")
