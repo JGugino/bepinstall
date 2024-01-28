@@ -3,10 +3,12 @@ package views
 import (
 	"fmt"
 
+	"github.com/JGugino/bepinstall/handlers"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type HomeView struct {
+	ViewHandler *handlers.ViewHandler
 	OptionsList *List
 }
 
@@ -17,6 +19,7 @@ type List struct {
 
 type ListItem struct {
 	Name     string
+	Action   string
 	Selected bool
 }
 
@@ -49,6 +52,16 @@ func (v HomeView) Update(msg tea.Msg) tea.Cmd {
 			}
 			return nil
 		case "enter":
+			if v.OptionsList.ListItems[v.OptionsList.Index].Action == "install-both" {
+				v.ViewHandler.SetView("install")
+				fmt.Println("Install Both")
+			} else if v.OptionsList.ListItems[v.OptionsList.Index].Action == "install-bepin" {
+				v.ViewHandler.SetView("install")
+				fmt.Println("Install Bepin")
+			} else if v.OptionsList.ListItems[v.OptionsList.Index].Action == "install-updates" {
+				v.ViewHandler.SetView("install")
+				fmt.Println("Install Updates")
+			}
 			return nil
 		}
 		return nil

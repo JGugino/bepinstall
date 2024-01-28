@@ -14,7 +14,6 @@ type ViewHandler struct {
 type View struct {
 	Id           string
 	ViewRenderer ViewRenderer
-	ViewDisplay  string
 }
 
 type ViewRenderer interface {
@@ -36,10 +35,6 @@ func (h *ViewHandler) AddView(view View) error {
 	}
 
 	return errors.New("view-already-exists")
-}
-
-func (h ViewHandler) ChangeView(viewId string) error {
-	return nil
 }
 
 func (h *ViewHandler) SetView(viewId string) error {

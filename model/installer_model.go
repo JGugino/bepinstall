@@ -20,16 +20,6 @@ func (im InstallerModel) Init() tea.Cmd {
 
 func (im InstallerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return im, im.ViewHandler.CurrentView.ViewRenderer.Update(msg)
-	// switch msg := msg.(type) {
-	// case tea.KeyMsg:
-	// 	switch msg.String() {
-	// 	case "ctrl+c":
-	// 		return im, tea.Quit
-	// 	}
-	// 	return im, nil
-	// }
-
-	// return im, nil
 }
 
 func (im InstallerModel) View() string {

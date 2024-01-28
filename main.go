@@ -20,10 +20,11 @@ func main() {
 	bepinVersionHandler = handlers.InitBepinHandler()
 
 	homeRenderer := views.HomeView{
+		ViewHandler: &viewHandler,
 		OptionsList: &views.List{ListItems: []*views.ListItem{
-			{Name: "Install BepInEx & Mods", Selected: true},
-			{Name: "Only Install BepInEx", Selected: false},
-			{Name: "Update Mods", Selected: false},
+			{Name: "Install BepInEx & Mods", Action: "install-both", Selected: true},
+			{Name: "Only Install BepInEx", Action: "install-bepin", Selected: false},
+			{Name: "Update Mods", Action: "install-updates", Selected: false},
 		},
 			Index: 0,
 		},
@@ -32,10 +33,17 @@ func main() {
 	homeView := handlers.View{
 		Id:           "home",
 		ViewRenderer: homeRenderer,
-		ViewDisplay:  homeRenderer.Show(),
+	}
+
+	installRenderer := views.InstallView{}
+
+	installView := handlers.View{
+		Id:           "install",
+		ViewRenderer: installRenderer,
 	}
 
 	viewHandler.AddView(homeView)
+	viewHandler.AddView(installView)
 
 	viewHandler.SetView("home")
 
