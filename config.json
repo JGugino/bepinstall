@@ -1,7 +1,8 @@
 {
-    "installer-version": "0.0.1",
+    "installer-version": "0.0.4",
     "game-directories": {
         "lethal-company": "D:\\SteamLibrary\\steamapps\\common\\Lethal Company",
+        "valheim": "D:\\SteamLibrary\\steamapps\\common\\Valheim",
         "testing": "./test_dir"
     }
 }

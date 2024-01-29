@@ -15,6 +15,7 @@ type ListItem struct {
 }
 
 func CreateNewList(startingIndex int, listItems []*ListItem) *List {
+	listItems[0].Selected = true
 	return &List{
 		ListItems: listItems,
 		Index:     startingIndex,
